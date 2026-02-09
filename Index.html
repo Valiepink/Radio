@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadioNGF - Loop Edition</title>
+    <style>
+        :root {
+            --play-color: #28a745;
+            --stop-color: #dc3545;
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .player-container {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0 0 15px 0;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        #player {
+            border-radius: 15px;
+            width: 100%;
+            aspect-ratio: 16/9;
+            margin-bottom: 25px;
+            background: #000;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .btn-play { background-color: var(--play-color); }
+        .btn-stop { background-color: var(--stop-color); }
+
+        button:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        .status-msg {
+            font-size: 0.85rem;
+            color: #86868b;
+            margin-top: 20px;
+        }
+
+        .live-dot {
+            height: 8px; width: 8px;
+            background-color: var(--stop-color);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0% {opacity:1} 50% {opacity:0.3} 100% {opacity:1} }
+    </style>
+</head>
+<body>
+
+    <div class="player-container">
+        <h1>RadioNGF</h1>
+        <div id="player"></div>
+        <div class="controls">
+            <button class="btn-stop" onclick="stopRadio()">⏹ STOP</button>
+            <button class="btn-play" onclick="playRadio()">▶ PLAY</button>
+        </div>
+        <div class="status-msg" id="status">
+            <span class="live-dot"></span> Mode Boucle Activé
+        </div>
+    </div>
+
+    <script>
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        const playlistId = 'PL4QNnZJr8sRN068s0BWzoQJXMPNlUCQQj';
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                playerVars: {
+                    'listType': 'playlist',
+                    'list': playlistId,
+                    'loop': 1, // Active la boucle
+                    'playlist': playlistId // Requis pour que le paramètre loop fonctionne sur une playlist
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            // Si la playlist se termine (State 0), on relance
+            if (event.data === YT.PlayerState.ENDED) {
+                player.playVideo();
+            }
+        }
+
+        function playRadio() { player.playVideo(); document.getElementById('status').innerHTML = '<span class="live-dot"></span> En direct (Boucle)'; }
+        function stopRadio() { player.pauseVideo(); document.getElementById('status').innerHTML = 'Radio en pause'; }
+    </script>
+</body>
+</html>
