@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadioNGF - Loop Edition</title>
+    <title>RadioNGF | La Radio Rap FR</title>
     <style>
         :root {
             --play-color: #28a745;
@@ -11,6 +11,7 @@
             --bg-color: #f5f5f7;
             --card-bg: #ffffff;
             --text-main: #1d1d1f;
+            --accent: #007AFF;
         }
 
         body {
@@ -18,67 +19,116 @@
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Section Accueil --- */
+        header {
+            height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-        }
-
-        .player-container {
-            background: var(--card-bg);
-            width: 90%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
             text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), 
+                        url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
         }
 
-        h1 {
-            font-size: 2rem;
-            margin: 0 0 15px 0;
-            font-weight: 800;
+        header h1 {
+            font-size: 4rem;
+            margin: 0;
+            letter-spacing: -2px;
             color: var(--text-main);
         }
 
-        #player {
-            border-radius: 15px;
+        header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .btn-scroll {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: var(--text-main);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-scroll:hover { transform: scale(1.05); }
+
+        /* --- Section Radio --- */
+        .radio-section {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+        }
+
+        .player-card {
+            background: var(--card-bg);
             width: 100%;
-            aspect-ratio: 16/9;
-            margin-bottom: 25px;
-            background: #000;
+            max-width: 450px;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Image de couverture de la radio */
+        .cover-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background-color: #ddd;
+        }
+
+        .player-content {
+            padding: 30px;
+        }
+
+        #player {
+            display: none; /* On cache le lecteur vidéo pour garder le look audio */
         }
 
         .controls {
             display: flex;
             justify-content: center;
             gap: 15px;
+            margin-top: 20px;
         }
 
         button {
             border: none;
-            padding: 14px 28px;
-            border-radius: 12px;
+            padding: 16px 32px;
+            border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s;
             color: white;
-            text-transform: uppercase;
+            flex: 1;
         }
 
         .btn-play { background-color: var(--play-color); }
         .btn-stop { background-color: var(--stop-color); }
-
-        button:hover { transform: scale(1.05); filter: brightness(1.1); }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
 
         .status-msg {
-            font-size: 0.85rem;
-            color: #86868b;
             margin-top: 20px;
+            font-size: 0.9rem;
+            color: #86868b;
         }
 
         .live-dot {
-            height: 8px; width: 8px;
+            height: 10px; width: 10px;
             background-color: var(--stop-color);
             border-radius: 50%;
             display: inline-block;
@@ -91,17 +141,32 @@
 </head>
 <body>
 
-    <div class="player-container">
+    <header>
         <h1>RadioNGF</h1>
-        <div id="player"></div>
-        <div class="controls">
-            <button class="btn-stop" onclick="stopRadio()">⏹ STOP</button>
-            <button class="btn-play" onclick="playRadio()">▶ PLAY</button>
+        <p>Le nouveau souffle du Rap FR. Une sélection pointue, en boucle, sans publicité. 
+           Découvrez les classiques de demain dès maintenant.</p>
+        <a href="#ecouter" class="btn-scroll">ÉCOUTER LE DIRECT</a>
+    </header>
+
+    <section class="radio-section" id="ecouter">
+        <div class="player-card">
+            <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&w=500&q=80" alt="Cover" class="cover-image">
+            
+            <div class="player-content">
+                <h2 style="margin:0">En direct</h2>
+                <div class="status-msg" id="status">
+                    Prêt pour la session
+                </div>
+
+                <div id="player"></div>
+
+                <div class="controls">
+                    <button class="btn-stop" onclick="stopRadio()">STOP</button>
+                    <button class="btn-play" onclick="playRadio()">PLAY</button>
+                </div>
+            </div>
         </div>
-        <div class="status-msg" id="status">
-            <span class="live-dot"></span> Mode Boucle Activé
-        </div>
-    </div>
+    </section>
 
     <script>
         var tag = document.createElement('script');
@@ -114,29 +179,25 @@
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
+                height: '0', width: '0', // On cache la vidéo
                 playerVars: {
                     'listType': 'playlist',
                     'list': playlistId,
-                    'loop': 1, // Active la boucle
-                    'playlist': playlistId // Requis pour que le paramètre loop fonctionne sur une playlist
-                },
-                events: {
-                    'onStateChange': onPlayerStateChange
+                    'loop': 1,
+                    'playlist': playlistId
                 }
             });
         }
 
-        function onPlayerStateChange(event) {
-            // Si la playlist se termine (State 0), on relance
-            if (event.data === YT.PlayerState.ENDED) {
-                player.playVideo();
-            }
+        function playRadio() { 
+            player.playVideo(); 
+            document.getElementById('status').innerHTML = '<span class="live-dot"></span> Diffusion RadioNGF en cours...'; 
         }
-
-        function playRadio() { player.playVideo(); document.getElementById('status').innerHTML = '<span class="live-dot"></span> En direct (Boucle)'; }
-        function stopRadio() { player.pauseVideo(); document.getElementById('status').innerHTML = 'Radio en pause'; }
+        function stopRadio() { 
+            player.pauseVideo(); 
+            document.getElementById('status').innerHTML = 'Radio en pause'; 
+        }
     </script>
+
 </body>
 </html>
